@@ -6,9 +6,9 @@ musically, and how to translate human instructions into slicer commands.
 
 ---
 
-## What EBYS Is
+## What CRICKET Is
 
-EBYS is a generative audio collage engine. It takes a song, separates it into 4 stems
+Cricket is a generative audio collage engine. It takes a song, separates it into 4 stems
 (vocals, melody, bass, drums), analyzes every transient onset in each stem, and stores
 descriptors for each slice. During playback, it continuously selects new slices for each
 stem and plays them — building a living, non-repeating version of the music.
