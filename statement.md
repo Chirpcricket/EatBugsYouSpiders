@@ -5,7 +5,7 @@ We live in it.
 We act like it's spiders.
 Perhaps we should adapt for the spider's diet!
 
-## cricket protein powder
+cricket protein powder
 
 
 
