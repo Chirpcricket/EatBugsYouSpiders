@@ -1,4 +1,4 @@
-# © Eat Bugs You Spider!
+# © Eat Bugs You Spiders!
 
 Cricket — Vibe Djing instrument / Webradio générative
 Montréal, 2023 — en cours
