@@ -8,5 +8,5 @@ Licence : AGPL-3.0
 
 ## Documentation
 
-- [`CRICKET.md`](./doc/CRICKET.md) — documentation principale : paramètres, commandes, descripteurs, comportement du système
+- [`CRICKET.md`](./docs/CRICKET.md) — documentation principale : paramètres, commandes, descripteurs, comportement du système
 - [`statement.md`](./docs/statement.md) — !@$%#?$ 🦗
