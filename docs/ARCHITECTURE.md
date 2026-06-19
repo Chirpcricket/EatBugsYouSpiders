@@ -1,0 +1,86 @@
+# EBYS Architecture
+
+## Two Phases
+
+### Analysis Phase — run once per track
+
+```
+Original mix file (mp3/wav)
+    → genre_tagger.py      Essentia + Discogs-EffNet → genres.json
+    → madmom_tagger.py     madmom DBNDownBeatTracker → downbeats.json
+    → Demucs               stem separation → htdemucs/TrackName/{vocals,drums,bass,other}.wav
+
+Separated stems (in Max)
+    → FluCoMa objects      onset detection, spectral shape, loudness, pitch, chroma, MFCC
+    → analyze_reader.js    reads FluCoMa buffers, orchestrates write sequence
+    → slice_writer.js      formats and commits descriptors
+    → analysis_library.json    permanent store on disk
+```
+
+**Essentia** (`genre_tagger.py`) classifies the original mix using the Discogs-EffNet model — always the full mix, never the stems, since the model was trained on complete tracks.
+
+**Madmom** (`madmom_tagger.py`) runs downbeat tracking on the original mix to extract time signature, BPM, and the timestamp of every bar 1. This feeds `downbeats.json`, which `slicer.js` reads at playback time to snap segment boundaries to the nearest bar.
+
+`analyze_reader.js` reads `stream.txt` to know which stems to process, drives FluCoMa's onset detection / spectral / loudness / pitch / chroma / MFCC buffers, then sends all descriptor values to `slice_writer.js`, which commits them to `analysis_library.json`.
+
+---
+
+### Playback Phase — every session
+
+```
+analysis_library.json  ──┐
+genres.json            ──┤→ ws_server.js    reads all three files via Node.js, sends as 2 KB chunks
+downbeats.json         ──┘       ↓
+                            slicer.js        assembles chunks, builds index, tags slices with genre,
+                                             snaps segment starts to bar 1 timestamps from downbeats
+                                ↓
+                        buffer_manager.js    2-level ring buffer (src buffers → ring buffers via fluid.bufcompose~)
+                                ↓
+                            karma~           plays the composed ring buffer segment
+```
+
+`ws_server.js` is the bridge between the TUI (WebSocket) and the Max patch (N4M). It reads all three data files via Node.js (no size limit) and delivers them to `slicer.js` in 2 KB chunks over Max's message bus, because Max's built-in JS engine has a hard 32 767-byte file read limit.
+
+`slicer.js` uses the data as follows:
+- **analysis_library.json** — slice descriptors (C, E, F, P, H, T) and BPM per stem per track
+- **genres.json** — top-5 genre tags per track, stored on each slice for runtime filtering
+- **downbeats.json** — bar 1 timestamps per track, used to snap segment starts to the nearest downbeat
+
+---
+
+## Key Files
+
+| File | Role |
+|------|------|
+| `genre_tagger.py` | Essentia — classifies original mix → `genres.json` |
+| `madmom_tagger.py` | Madmom — downbeat tracking on original mix → `downbeats.json` |
+| `analysis_library.json` | Permanent descriptor store — written by analysis, read by playback |
+| `downbeats.json` | Bar timestamps per track — used by slicer for bar-aligned segment starts |
+| `genres.json` | Genre classification results per track — fed to slicer for runtime filtering |
+| `analyze_reader.js` | Analysis orchestrator — reads FluCoMa buffers, drives slice_writer |
+| `slice_writer.js` | Writes slice descriptors and metadata to analysis_library.json |
+| `ws_server.js` | WebSocket bridge (Node.js / N4M) — reads library, delivers chunks to slicer |
+| `slicer.js` | Segment selector — assembles library, builds index, picks segments per stem |
+| `buffer_manager.js` | 2-level ring buffer manager — loads stems, drives fluid.bufcompose~ |
+| `slot_router.js` | Routes play commands to karma~ (set buffer, seek 0, trigger) |
+
+---
+
+## Genre Filtering
+
+Once `buildIndex` has run, every slice in the index carries a `genres` array from `genres.json`. You can filter playback by genre at any time with TUI commands:
+
+```
+setGenreFilter Techno      # only play slices from tracks tagged with "Techno"
+setGenreFilter Deep House  # substring match, case-insensitive
+clearGenreFilter           # back to all tracks
+listGenres                 # print available genres to the Max console
+```
+
+If the filter matches nothing for a given stem, slicer falls back to all slices for that stem so playback never stops.
+
+---
+
+## Why Chunks?
+
+Max's built-in JavaScript engine caps file reads at **32 767 bytes**. `analysis_library.json` is ~1 MB. Rather than fight that limit, `ws_server.js` (Node.js, no restrictions) reads the file and sends it to `slicer.js` broken into 2 KB pieces. Slicer glues them back together in memory before parsing.
