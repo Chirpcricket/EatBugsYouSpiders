@@ -12,4 +12,3 @@ Licence : AGPL-3.0
 - [`ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — pipeline de données interne.
 - [`STATEMENT.md`](./docs/STATEMENT.md) — chirp!
 
-run TUI node sdj-tui.js 
