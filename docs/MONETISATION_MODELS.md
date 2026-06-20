@@ -44,6 +44,56 @@ There is also a deeper analogy: the system itself behaves like proteins — slic
 
 ---
 
+## Crypto Token
+
+The token is speculative by design. It gets released early — before the project is fully defined — and the market determines its value over time. That ambiguity is intentional.
+
+The strategy is a race: keep building faster than people establish what EBYS is worth. By the time the market prices it, the project has already moved. The token captures the bet on where it's going, not where it is.
+
+No artificial backing, no promises about utility. The value comes from what the project becomes — the radio, the hardware, the protein brand, the training loop, the community. The token is a stake in all of it at once, before any of it is fully legible.
+
+The mechanism is simple: if development stops, holders can no longer sell for higher than they bought — they either hold and wait, or start selling for lower before the price drops too far. If development is consistent and visible, holders keep selling for more, new buyers come in, and the perceived value of the project rises. The quality and velocity of development is directly reflected in the token price. That's what speculation is — a continuous bet on momentum, and a real-time referendum on whether the project is alive. It works in both directions, and it creates its own pressure to keep moving.
+
+---
+
+## Two Modes
+
+| | EBYS Radio | Self-hosted Radio |
+|---|---|---|
+| Corpus | Community-submitted | Curator-uploaded |
+| Attribution | Verified by platform | Curator's integrity |
+| Split | Enforced by contract | No blockchain |
+| Enforcement | Technical | Social/reputational |
+
+The tipping and blockchain system is exclusive to the official EBYS Montreal radio. It's a controlled environment — artists submit their tracks directly, attribution is verified by the platform, and the split is enforced by smart contract. Self-hosted radios are outside that system entirely. They can use EBYS as an instrument or run it as a radio, but there is no on-chain tipping, no enforced split, no escrow. That complexity only works when the corpus is trusted.
+
+---
+
+## On-Chain Tipping (EBYS Radio only)
+
+EBYS is you. The model trained on the Montreal community's submissions, shaped by curation, reflecting the collective musical intelligence of the scene. When someone tips a mix, the split isn't artist vs. system — it's artist vs. curator. The curator cut is EBYS's cut.
+
+When a listener tips, the transaction is recorded on Solana — immutable, direct, no intermediary. Solana is fast and cheap per transaction, which matters when tips are small and frequent. The long-term goal is a purpose-built EBYS chain, owned and governed by the project. Solana is the starting point — infrastructure while the product proves itself.
+
+**If the mix is a pure, unaltered track** from a single artist, EBYS takes nothing. The tip goes entirely to that artist.
+
+**If the mix is a composite** — slices drawn from multiple tracks, woven together by EBYS's selection — EBYS earns a share proportional to how much the mix was authored. The equation measures that:
+
+```
+curator_share = (1 - 1/N) × edit_rate_normalized × avg_descriptor_distance
+```
+
+Where:
+- **N** = number of distinct source tracks contributing slices. Single track collapses the whole equation to 0.
+- **edit_rate_normalized** = how frequently EBYS switched between sources. A slow stem swap is a light touch; rapid cross-cutting is heavy curation.
+- **avg_descriptor_distance** = how spectrally dissimilar the combined slices were. Bridging very different textures is a bolder, more authored decision.
+
+The remaining `(1 - curator_share)` is split proportionally across all contributing artists, weighted by how many of their slices appeared in the mix.
+
+**Artist wallets & escrow.** Artists don't need a crypto wallet to participate. Earnings accumulate in escrow tied to their audio fingerprint — not a person, not a wallet, just the sound itself. The money waits until they claim it, however they want: crypto wallet, bank transfer, e-transfer. There's no deadline. If an artist never claims, the funds sit. When they do claim, ownership is verified through a combination of original stems, existing presence on platforms like Bandcamp or SoundCloud, and community vouching from other registered artists. No single proof is bulletproof — together they raise the bar high enough to deter fraud.
+
+---
+
 ## Other Possibilities
 
 - **Donations** — Bandcamp-style, pay what you want. Low friction, fits the community radio context.

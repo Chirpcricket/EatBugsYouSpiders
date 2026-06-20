@@ -40,4 +40,3 @@ Human language evolved to carry meaning — but before syntax, before semantics,
 Music operates entirely in that pre-linguistic layer. It bypasses the part of the brain that parses sentences and goes straight to the part that feels. EBYS generates in that register. Its "sentences" are tonal arcs. Its "punctuation" is silence and attack. Its "vocabulary" is borrowed from real artists, real performances, real moments captured in Montreal — and recombined into something that has never existed before.
 
 Every generation is a new utterance. None of it repeats.
-
