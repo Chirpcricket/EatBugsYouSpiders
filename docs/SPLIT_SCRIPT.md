@@ -4,6 +4,12 @@ When a listener tips a mix, the payment is split automatically between the curat
 
 ---
 
+## Bottom Up
+
+The system is bottom up. Artists are the raw material. The curator shapes from what exists. The tip flows back down to the source. Value originates at the track level, rises through curation, returns to where it came from.
+
+---
+
 ## What EBYS Knows at Tip Time
 
 EBYS has full visibility into the mix at every moment:
@@ -15,6 +21,17 @@ EBYS has full visibility into the mix at every moment:
 - How spectrally different those sources are from each other
 - Which stem each track contributed to, and how heavily weighted that stem was
 - Which track the other tracks adapted to — who led, who followed
+
+---
+
+## How Leadership Is Determined
+
+Leadership in EBYS is emergent — not declared by a single command, but felt through two mechanisms working together:
+
+- **`setTrackWeight`** — makes a stem louder and more dominant in the mix
+- **`setMatchProb`** — controls how tightly a stem's next slice must match the end state of another stem's last slice
+
+The stem being chased is the leader. The stem doing the chasing is the follower. At any moment, the leader is the stem with the highest active weight that others are matching against. EBYS knows this in real time — it's the signal that drives the artist split.
 
 ---
 
@@ -37,36 +54,26 @@ The remaining `(1 - curator_share)` goes to the artists.
 
 ## The Artist Split
 
-This is the open question. EBYS knows not just how many slices each track contributed, but the quality of that contribution:
+The split is weighted by stem weight at the moment of the tip — not slice count. What matters is the hierarchy of the mix at that exact second: who's leading, who's following.
 
-- Was this track the **backbone** — the harmonic center everything else adapted to?
-- Was it the **texture** — present but secondary, bending to fit the lead?
-- Was it **briefly featured** — high weight for a short moment?
-- How much was it **transformed** from its original form?
+**The leader** — the track with the highest active stem weight, whose state the other stems are matching against — earns the largest share. The tip is for the direction the mix was going, and the leader set that direction.
 
-### The Philosophical Question
+**Supporting tracks** — stems actively following the leader via match probability — split the remainder proportionally by their weight.
 
-Are we paying for **usage** or for **transformation**?
+**Briefly featured tracks** — present but not structurally central at tip time — earn the smallest share.
 
-**Pay the leader more** — the track that set the center, that everything adapted to, was the most centrally used. It defined the mix.
-
-**Pay the workers more** — the tracks that bent to fit gave the most raw material. Their sound was stretched furthest from its original form.
-
-**Pay equally regardless of role** — the lead/follow dynamic is EBYS's doing, not the artists'. Why should an artist earn less because EBYS chose to use their track as texture rather than backbone?
+The default is leader-weighted. But this is configurable per deployment — a label or community radio can adjust the distribution to reflect their own values about usage vs. contribution.
 
 ### The Role at the Moment of the Tip
 
 The mix is a fire — leaders interchange constantly. A track that was texture in one slice leads the next. The split is calculated at the moment the tip is sent, not across the whole session.
 
-EBYS knows who was leading at that exact second. That track gets a weighted majority of the artist share. Supporting tracks split the remainder proportionally. Briefly featured tracks get the smallest share.
-
-Over many tips across many sessions, the economy balances itself. No track is permanently the worker or permanently the leader. A track that carried texture all night might have led the moment someone tipped. The math is local to the tip, the fairness is global over time.
+Over many tips across many sessions, the economy balances itself. No track is permanently the worker or permanently the leader. The math is local to the tip, the fairness is global over time.
 
 ---
 
-## To Be Defined
+## Open Questions
 
-- Do we weight by slice count, stem weight, or some combination?
-- Do we pay more to the track that led, or the tracks that adapted?
-- Is the split about usage or transformation?
-- Should a track that appeared briefly at very high weight earn more than one that played continuously at low weight?
+- Exact weighting ratio between leader and followers — how much more does the leader earn?
+- How to handle ties — two stems at equal weight at tip time?
+- Should briefly featured tracks earn anything, or only tracks actively playing at tip time?
