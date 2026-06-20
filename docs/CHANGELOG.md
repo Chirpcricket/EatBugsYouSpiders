@@ -5,6 +5,30 @@ Generative audio collage engine. Separates songs into stems, analyzes every tran
 
 ---
 
+## 0.1.4 — 2026-06-19
+
+### Max / slicer.js
+- **`buffer_manager.js` fix** — wrong `filename` field in maxpat was silently invoking `track_loader.js` instead; corrected
+- **Phantom `src_done` fix** — removed 3 wrong patch cords that were triggering spurious `src_done` callbacks
+- **`fluid.bufcompose~` attribute fix** — `destframe` → `deststartframe` (correct attribute name)
+- **`dict: cannot read dictionary: -1` fix** — removed loadbang → dict cord that fired before the dict was populated
+
+### Infrastructure
+- **32KB JS read limit bypass** — `analysis_library.json` (~1MB) now read by `ws_server.js` (Node.js) and delivered to `slicer.js` in 2KB chunks over Max's message bus; works around Max's hard JS file read cap
+- **Genre filtering** — `genres.json` delivered to slicer via the same chunked mechanism; every slice is tagged with its track's genres
+- Genre filter commands: `setGenreFilter <genre>`, `clearGenreFilter`, `listGenres`
+
+### Cricket / Training
+- **`:bake` training system** — captures intent + Cricket's commands + user corrections + live descriptor state to `training_log.jsonl`
+- **`convert_bakes.py`** — converts bake log to MLX fine-tuning JSONL format
+- **`finetune.sh`** — one-command LoRA fine-tune on Apple Silicon via `mlx-lm`
+- `mlx-lm` installed in `~/ebys-mlx-env`
+
+### Documentation
+- **`ARCHITECTURE.md`** — full pipeline documented: Analysis (Demucs → Essentia → madmom → FluCoMa → JSON) and Playback (ws_server.js → chunks → slicer.js → buffer_manager.js → karma~)
+
+---
+
 ## 0.1.3 — 2026-06-18
 
 ### TUI
