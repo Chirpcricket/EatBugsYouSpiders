@@ -13,6 +13,22 @@ Generative audio collage engine. Separates songs into stems, analyzes every tran
 - **`fluid.bufcompose~` attribute fix** — `destframe` → `deststartframe` (correct attribute name)
 - **`dict: cannot read dictionary: -1` fix** — removed loadbang → dict cord that fired before the dict was populated
 
+### Time-stretching (karma~ speed wiring)
+- **`stretchRatio` fix in `buffer_manager.js`** — `composePend` was silently discarding `stretchRatio`; now stored and passed through `ring_done` → `slot_router.js` as 4th argument
+- **`slot_router.js` v4** — added dedicated speed outlets (12–15) wired to karma~'s right inlet (speed factor = `1/stretchRatio`); pitch follows speed tape-style
+- Delay timer corrected: `delayMs = segDurMs × stretchRatio` so the next segment fires at the right moment regardless of stretch amount
+
+### Per-stem pitch shifting (pfft~/gizmo~)
+- **`ebys-pitch.maxpat`** — new pfft~ subpatch: `fftin~ 1 square` → `gizmo~` → `fftout~ 1 hamming`; `in 2` receives pitch ratio from outside, routes to gizmo~'s frequency-shift inlet; duration unchanged
+- **`EBYS_ANALYZE.maxpat`** — 4× pfft~ objects (one per stem) inserted between karma~ and the mixer; slot_router outlets 16–19 wired to each pfft~ inlet 1
+- **`slot_router.js` v4** — added pitch outlets (16–19) and `pitchShift / setPitchSemitones / setPitch` functions; per-stem `stemPitch` state; `setPitch all` resets all stems
+- **`ws_server.js`** — intercepts `:pitchShift <stem> <semitones>` before buildIndex check; calls `Max.outlet('pitchShift', stem, semitones)`; route object outlet 22 → `prepend pitchShift` (obj-4068) → slot_router inlet 0
+- TUI command: `:pitchShift melody 3` raises melody 3 semitones; `:pitchShift all 0` resets
+
+### Code clarity
+- **`slicer.js`** — added `── Role ──` header block: sequencing brain, musical decision-making, no direct DSP access
+- **`slot_router.js`** — added `── Role ──` header block: audio engine parameter hub, sole owner of karma~/pfft~ messages
+
 ### Infrastructure
 - **32KB JS read limit bypass** — `analysis_library.json` (~1MB) now read by `ws_server.js` (Node.js) and delivered to `slicer.js` in 2KB chunks over Max's message bus; works around Max's hard JS file read cap
 - **Genre filtering** — `genres.json` delivered to slicer via the same chunked mechanism; every slice is tagged with its track's genres
@@ -25,7 +41,8 @@ Generative audio collage engine. Separates songs into stems, analyzes every tran
 - `mlx-lm` installed in `~/ebys-mlx-env`
 
 ### Documentation
-- **`ARCHITECTURE.md`** — full pipeline documented: Analysis (Demucs → Essentia → madmom → FluCoMa → JSON) and Playback (ws_server.js → chunks → slicer.js → buffer_manager.js → karma~)
+- **`ARCHITECTURE.md`** — full pipeline documented: Analysis (Demucs → Essentia → madmom → FluCoMa → JSON) and Playback (ws_server.js → chunks → slicer.js → buffer_manager.js → karma~ → pfft~/gizmo~)
+- **`PLAYBACK.md`** — updated to reflect two-axis audio engine (tempo via karma~ speed, pitch via pfft~/gizmo~) and slot_router.js role separation
 
 ---
 
@@ -84,7 +101,7 @@ Generative audio collage engine. Separates songs into stems, analyzes every tran
 ### Analysis
 - `add_tension.py` — new script that computes per-bar momentum for all 6 descriptors (C, E, F, P, H, T) and writes `tension_C/E/F/P/H/T` back to every slice in `analysis_library.json`
 - Momentum algorithm: group slices by bar → average descriptor per bar → sliding window slope → normalize 0–1 → write back
-- `ADD_TENSION.md` — documentation for the tension script
+- `MOMENTUM.md` — documentation for the tension script
 - `tension_E` near 1.0 = energy building (drop incoming). Near 0.0 = releasing. 0.5 = stable.
 - T descriptor computed on the fly as RMS of MFCC coefficients M0–M5
 

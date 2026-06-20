@@ -84,12 +84,30 @@ Analysis library (analysis_library.json)
           │
     ┌─────┴──────┐
     │            │
-ws_server.js   slot_router.js (Max JS object)
-(→ TUI)        — switches karma~ buffer: "set play_N_voc"
-               — seeks karma~ to startFrac position
-               — sets delay timer to segDurMs
-               — delay fires → "next vocals" → slicer picks new segment
+ws_server.js  buffer_manager.js
+(→ TUI)       — loads audio from disk into src buffers
+              — fluid.bufcompose~ copies segment → ring buffer
+              — passes stretchRatio through to slot_router
+                    │
+                    ▼ outlet 12: "vocals  ringSlot  segDurMs  stretchRatio"
+              slot_router.js  (audio engine hub)
+              — karma~ right inlet ← 1/stretchRatio  (tape speed, pitch follows)
+              — karma~ left inlet  ← "set ring_N_voc" + seek 0
+              — delay timer ← segDurMs × stretchRatio
+              — pfft~/gizmo~ ← pitch ratio per stem  (independent of tempo)
+              — delay fires → "next vocals" → slicer picks new segment
 ```
+
+### Two Audio Axes
+
+| Axis | Object | Control | Effect |
+|------|--------|---------|--------|
+| Tempo | karma~ right inlet | `speedFactor = 1/stretchRatio` | Slower/faster playback; pitch follows (tape-style) |
+| Pitch | pfft~/gizmo~ | `ratio = 2^(semitones/12)` | Frequency shift only; duration unchanged |
+
+These are independent. A track can be slowed down (karma~) while its melody stem is transposed up (gizmo~) at the same time.
+
+TUI command: `:pitchShift melody 3` → raises melody 3 semitones, no tempo change.
 
 ---
 
@@ -134,12 +152,13 @@ vocals  slot  startFrac  endFrac  stretchRatio  segDurMs
 
 | File | Role |
 |------|------|
-| `slicer.js` | Segment selection, multi-track index, outlet 0 messages |
-| `track_loader.js` | Loads all tracks into play_N_* buffers at startup |
-| `slot_router.js` | Max JS: routes slicer outlet 0 → karma~ switch + seek + delay |
-| `ws_server.js` | Bridges Max ↔ TUI WebSocket |
+| `slicer.js` | **Sequencing brain** — segment selection, multi-track index, transport (start/stop/next), BPM math. No DSP. |
+| `buffer_manager.js` | 2-level ring buffer manager — loads src buffers from disk, drives fluid.bufcompose~, passes stretchRatio downstream |
+| `slot_router.js` | **Audio engine hub** — sole owner of karma~/pfft~ messages. Two axes: tempo (karma~ speed) + pitch (pfft~/gizmo~). No sequencing logic. |
+| `ebys-pitch.maxpat` | pfft~ subpatch — frequency-domain pitch shifter (gizmo~). Duration unchanged. |
+| `ws_server.js` | Bridges Max ↔ TUI WebSocket; intercepts `:pitchShift` and routes to slot_router |
 | `sdj-tui.js` | Terminal UI |
-| `EBYS_ANALYZE.maxpat` | Max patch: audio graph, karma~ objects, buffer~ objects |
+| `EBYS_ANALYZE.maxpat` | Max patch: audio graph, karma~ objects, ring buffer~, pfft~ objects, route/prepend wiring |
 
 ---
 

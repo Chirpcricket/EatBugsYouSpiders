@@ -33,10 +33,16 @@ genres.json            ──┤→ ws_server.js    reads all three files via No
 downbeats.json         ──┘       ↓
                             slicer.js        assembles chunks, builds index, tags slices with genre,
                                              snaps segment starts to bar 1 timestamps from downbeats
-                                ↓
+                                ↓  outlet 0: stem  slot  startFrac  endFrac  stretchRatio  segDurMs
                         buffer_manager.js    2-level ring buffer (src buffers → ring buffers via fluid.bufcompose~)
+                                ↓  outlet 12: stem  ringSlot  segDurMs  stretchRatio
+                          slot_router.js     audio engine hub — translates play commands to DSP messages:
+                                             · karma~ right inlet ← speedFactor (1/stretchRatio)  [tempo axis]
+                                             · karma~ left inlet  ← "set ring_N_stem" + seek 0    [buffer switch]
+                                             · pfft~/gizmo~       ← pitch ratio per stem          [pitch axis]
                                 ↓
-                            karma~           plays the composed ring buffer segment
+                     karma~ → pfft~/gizmo~   karma~ plays at variable speed (tape stretch);
+                                             pfft~/gizmo~ shifts pitch independently per stem
 ```
 
 `ws_server.js` is the bridge between the TUI (WebSocket) and the Max patch (N4M). It reads all three data files via Node.js (no size limit) and delivers them to `slicer.js` in 2 KB chunks over Max's message bus, because Max's built-in JS engine has a hard 32 767-byte file read limit.
@@ -60,9 +66,10 @@ downbeats.json         ──┘       ↓
 | `analyze_reader.js` | Analysis orchestrator — reads FluCoMa buffers, drives slice_writer |
 | `slice_writer.js` | Writes slice descriptors and metadata to analysis_library.json |
 | `ws_server.js` | WebSocket bridge (Node.js / N4M) — reads library, delivers chunks to slicer |
-| `slicer.js` | Segment selector — assembles library, builds index, picks segments per stem |
+| `slicer.js` | **Sequencing brain** — assembles library, builds index, picks segments, owns transport |
 | `buffer_manager.js` | 2-level ring buffer manager — loads stems, drives fluid.bufcompose~ |
-| `slot_router.js` | Routes play commands to karma~ (set buffer, seek 0, trigger) |
+| `slot_router.js` | **Audio engine hub** — sole owner of karma~/pfft~ messages; tempo axis (speed) + pitch axis (gizmo~) |
+| `ebys-pitch.maxpat` | pfft~ subpatch — `fftin~` → `gizmo~` → `fftout~`; `in 2` receives pitch ratio from slot_router |
 
 ---
 
