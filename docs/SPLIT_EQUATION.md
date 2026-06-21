@@ -1,9 +1,16 @@
 # Split Equation — How Tips Are Divided
 
-When a listener tips a mix, the payment is split between the curator (DJ) and the contributing artists. The curator earns a share proportional to how much they actively authored the result. Artists split the remainder according to the follow graph.
+When a listener tips a mix, the payment is split between the curator (DJ) and the contributing artists.
+
+By default:
+- **Curator** receives a guaranteed floor of **40%**
+- **Artists** receive the remaining **60%**
+
+The curator can earn above the floor through creative contribution — but that extra comes directly out of the artist pool. The more the curator invents, the more they claim. The artists keep what the curator doesn't earn.
 
 ```
-artist_pool = 1 - curator_share
+curator_share = floor + (1 − floor) × creative_factor
+artist_pool   = 1 − curator_share
 ```
 
 ---
@@ -23,24 +30,28 @@ EBYS has full visibility into the mix at every moment:
 - How many distinct tracks are contributing
 - How rapidly EBYS has been switching between sources
 - How spectrally different those sources are from each other
+- How many different genres are blended together
 - The full `followStem` graph — who is following who, and at what weight
 
 ---
 
 ## The Curator's Share
 
-The curator earns more when the mix is more inventive — more sources, more active switching, more spectral contrast between them. If only one track is playing, the curator earns nothing.
+The curator always earns the floor — they showed the music to the world, and that work has value regardless of how simple the set was. Everything above the floor is earned through creative contribution: more sources, more active switching, more spectral contrast, more genre mixing. This variable bonus is drawn from the artist pool.
 
 ```
-curator_share = (1 - 1/N) × edit_rate_normalized × avg_descriptor_distance
+curator_share = 0.40 + 0.60 × (1 − 1/N) × edit_rate_normalized × avg_descriptor_distance × genre_diversity
 ```
 
 Where:
-- **N** = number of distinct source tracks. N=1 → curator share = 0.
+- **0.40** = floor. Minimum guaranteed curator share. Configurable per deployment — 40% is a placeholder, not a final value.
+- **0.60** = the artist pool. The curator's variable earnings come out of this.
+- **N** = number of distinct source tracks. N=1 → only the floor is earned (no diversity possible).
 - **edit_rate_normalized** = how frequently EBYS switched between sources.
 - **avg_descriptor_distance** = how spectrally different the combined slices were.
+- **genre_diversity** = how many different genres are blended. More genre-crossing → more curator credit.
 
-The curator's credit comes entirely from contrast and activity — not from the music itself.
+The curator's credit above the floor comes entirely from contrast, activity, and genre invention — not from the music itself.
 
 ---
 
