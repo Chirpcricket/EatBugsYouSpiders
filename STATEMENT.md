@@ -1,4 +1,4 @@
-# EBYS — Eat Bugs You Spiders!
+# EBYS — Eat Bugs You Spider!
 
 Chirp!
 
