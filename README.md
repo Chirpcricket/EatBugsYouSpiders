@@ -9,6 +9,7 @@ Licence : AGPL-3.0
 ## Documentation
 
 - [`CRICKET.md`](./CRICKET.md) — documentation principale : paramètres, commandes, descripteurs, comportement du système
+- [`ARCHITECTURE_REF.md`](./ARCHITECTURE_REF.md) — covers every file in the project.
 - [`STATEMENT.md`](./STATEMENT.md) — chirp!
 
 ## Licence
