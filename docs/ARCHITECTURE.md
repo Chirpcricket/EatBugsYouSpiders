@@ -48,7 +48,7 @@ downbeats.json         ──┘       ↓
 `ws_server.js` is the bridge between the TUI (WebSocket) and the Max patch (N4M). It reads all three data files via Node.js (no size limit) and delivers them to `slicer.js` in 2 KB chunks over Max's message bus, because Max's built-in JS engine has a hard 32 767-byte file read limit.
 
 `slicer.js` uses the data as follows:
-- **analysis_library.json** — slice descriptors (C, E, F, P, H, T) and BPM per stem per track
+- **analysis_library.json** — slice descriptors (C, S, E, F, P, H, T) and BPM per stem per track
 - **genres.json** — top-5 genre tags per track, stored on each slice for runtime filtering
 - **downbeats.json** — bar 1 timestamps per track, used to snap segment starts to the nearest downbeat
 
@@ -60,7 +60,7 @@ downbeats.json         ──┘       ↓
 |------|------|
 | `genre_tagger.py` | Essentia — classifies original mix → `genres.json` |
 | `madmom_tagger.py` | Madmom — downbeat tracking on original mix → `downbeats.json` |
-| `analysis_library.json` | Permanent descriptor store — written by analysis, read by playback |
+| `analysis_library.json` | Permanent descriptor store — written by analysis, read by playback (descriptors: C S E F P H T) |
 | `downbeats.json` | Bar timestamps per track — used by slicer for bar-aligned segment starts |
 | `genres.json` | Genre classification results per track — fed to slicer for runtime filtering |
 | `analyze_reader.js` | Analysis orchestrator — reads FluCoMa buffers, drives slice_writer |
@@ -98,7 +98,7 @@ User instruction ("make it darker")
           ▼
     training_log.jsonl          append-only JSONL, one line per bake:
                                   intent, cricket_cmds, user_corrections,
-                                  final_cmds, live descriptor state (C/E/F/P/H/T),
+                                  final_cmds, live descriptor state (C/S/E/F/P/H/T),
                                   track name, BPM at bake time
 ```
 

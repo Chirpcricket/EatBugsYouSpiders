@@ -35,21 +35,25 @@ When all three are neutral, selection is random. Cricket adjusts the balance bet
 
 ## Descriptors — What They Mean Musically
 
-Each slice has 6 descriptors extracted by FluCoMa:
+Each slice has 7 descriptors extracted by FluCoMa:
 
 | Symbol | FluCoMa Descriptor | Musical Meaning |
 |--------|-------------------|-----------------|
 | **C** | Spectral Centroid (Hz) | Brightness / harshness. High C = lots of high-frequency content (sibilance, cymbals, distortion). Low C = warm, dark, muffled. |
+| **S** | Spectral Spread (Hz²) | Width of the spectrum around the centroid. High S = energy spread across a wide frequency band (full-bodied, noisy, complex). Low S = energy concentrated near one frequency (pure tones, narrow sounds). |
 | **E** | Loudness (LUFS) | Energy / intensity. High E (closer to 0) = loud, powerful. Low E (more negative) = quiet, delicate. |
 | **F** | Spectral Flatness | Noise vs. tone. High F = noisy, unpitched (breaths, cymbals, distortion). Low F = tonal, pitched, clean. |
 | **P** | Pitch (Hz) | Fundamental frequency. 0 = unpitched (below confidence threshold). High P = high notes. Low P = low notes or silence. |
 | **H** | Chroma (0–1) | Dominant pitch class — the strongest note in the harmonic content, normalized across all 12 chroma bins. High H = one pitch class dominates (tonal, in-key). Low H = spread energy across all pitches (atonal, percussive). Computed from `fluid.bufchroma~`. |
 | **T** | Timbre (MFCC RMS) | Timbral fingerprint — a single scalar summarizing the shape of the spectral envelope via the first 6 MFCC coefficients: `sqrt((M0²+M1²+M2²+M3²+M4²+M5²)/5)`. Think of it as "texture identity" — slices from the same instrument family tend to cluster together in T space. |
 
+**C vs S:** C tells you *where* the energy is; S tells you *how wide*. A narrow sine tone has low C (if it's a low note) and low S (all energy at one point). White noise has high C and very high S (energy everywhere). A rich chord mid-register might have mid C and high S.
+
 Each slice also stores **delta values** — the net change from the start to the end of the slice:
 
 - `deltaE > 0` → net louder at the end (energy rising overall)
 - `deltaC < 0` → net darker at the end (centroid falling overall)
+- `deltaS > 0` → net wider spectrum at the end (spreading out)
 - `deltaF > 0` → net noisier at the end
 - `deltaP > 0` → net higher pitch at the end
 - `deltaH > 0` → net stronger pitch class at the end (more tonal)
@@ -91,6 +95,7 @@ setStayProb <0.0–1.0>
 ### Descriptor Weights
 ```
 setWeight C <v>
+setWeight S <v>
 setWeight E <v>
 setWeight F <v>
 setWeight P <v>
@@ -99,13 +104,14 @@ setWeight T <v>
 ```
 When using nextNearest, how much each descriptor influences which slice is chosen.
 Higher weight = that quality matters more for finding a "similar" slice.
-Default: C=1.0 E=2.0 F=0.5 P=1.5 H=1.0 T=1.5
+Default: C=1.0 S=0.8 E=2.0 F=0.5 P=1.5 H=1.0 T=1.5
 
 **These defaults are provisional guesses.** The correct values are library-specific and taste-specific — they should be derived from the `:bake` training loop, not assumed upfront. Once enough bakes are collected, the fine-tuned model will have seen which weights actually produced the corrections you wanted, and those empirical values should replace these defaults.
 
 ### Transition Matching
 ```
 setMatchProb C <0.0–1.0>
+setMatchProb S <0.0–1.0>
 setMatchProb E <0.0–1.0>
 setMatchProb F <0.0–1.0>
 setMatchProb P <0.0–1.0>
@@ -130,6 +136,7 @@ it came from the same instrument or texture.
 ### Directional Preference
 ```
 setDirPref C <-1.0–1.0>
+setDirPref S <-1.0–1.0>
 setDirPref E <-1.0–1.0>
 setDirPref F <-1.0–1.0>
 setDirPref P <-1.0–1.0>
@@ -153,6 +160,21 @@ setTrackWeight bass <0.0–2.0>
 setTrackWeight drums <0.0–2.0>
 ```
 Louder/quieter individual stems in the mix.
+
+### Follow Stem
+```
+followStem <stem> <target1> <weight1> [<target2> <weight2> ...]
+followStem <stem> self
+```
+Rewires a stem's reference head to read another stem's end descriptors instead of its own.
+Weights are normalised to sum to 1.0 automatically.
+
+`followStem vocals melody 0.8 bass 0.2` → vocals matches against 80% melody + 20% bass state.
+`followStem vocals melody 1.0` → vocals follows melody completely.
+`followStem vocals self` → reset vocals to read its own descriptors (default).
+
+This makes one stem chase another. The stem being followed is the leader. All existing
+`setMatchProb` and `setDirPref` settings apply relative to the blended reference state.
 
 ### Fallback Tempo
 ```
@@ -211,6 +233,17 @@ When the user speaks in musical language, translate into the commands above.
 | jarring / surprising cuts | `setMatchProb C 0.0`, `setMatchProb E 0.0` |
 | match brightness 80% | `setMatchProb C 0.8` |
 | seamless energy flow | `setMatchProb E 0.8` |
+
+### Harmonic Direction / Key
+
+| User says | Translation |
+|-----------|------------|
+| stay in key / harmonic | `setKeyFilter Am` (or whatever key) |
+| open it up harmonically | `clearKeyFilter` |
+| wider spectrum / fuller | `setWeight S 2.0`, `setDirPref S 1` |
+| narrow / pure / focused | `setWeight S 2.0`, `setDirPref S -1` |
+| spreading out spectrally | `setDirPref S 1`, `setDirWeight 1.5` |
+| narrowing / focusing | `setDirPref S -1`, `setDirWeight 1.5` |
 
 ### Focus on a Stem
 
@@ -326,7 +359,7 @@ EBYS analysis happens in two stages before playback:
 Run from the Max patch or with `:buildIndex`. For each stem (vocals, melody, bass, drums):
 - Demucs separates the audio into stems
 - FluCoMa detects transient onsets and cuts slices
-- Each slice gets descriptors: C (centroid), E (energy), F (flatness), P (pitch), H (chroma), T (timbre), and delta values for each
+- Each slice gets descriptors: C (centroid), S (spread), E (energy), F (flatness), P (pitch), H (chroma), T (timbre), and delta values for each
 
 The result is stored in `analysis/*.json`, one file per track/stem.
 
@@ -352,9 +385,42 @@ Two-step command (asks for confirmation). Wipes all analysis JSON files — ever
 
 ---
 
+## Filters — Genre and Key
+
+### Genre Filter
+```
+setGenreFilter <genre>
+clearGenreFilter
+```
+Restricts slice selection to tracks tagged with a matching genre string.
+Case-insensitive substring match — `setGenreFilter Techno` matches "Electronic---Techno".
+If no slices pass the filter, it falls back to all slices.
+
+`setGenreFilter House` → only play slices from House-tagged tracks.
+`clearGenreFilter` → remove the restriction.
+
+### Key Filter
+```
+setKeyFilter <key>
+clearKeyFilter
+```
+Restricts slice selection to tracks whose detected key matches the string.
+Case-insensitive substring match against the track's key metadata (e.g. "Am", "C#", "G").
+Key is stored per-track, not per-slice — all slices from a track share the same key.
+
+`setKeyFilter Am` → only select from tracks in A minor.
+`setKeyFilter C` → selects from C, C#, Cm, C#m — any key starting with C.
+`clearKeyFilter` → remove the restriction.
+
+If no slices pass the key filter, the engine falls back to all slices with a log message.
+
+**Combining filters:** genre and key filters stack — a slice must pass both to enter the pool.
+
+---
+
 ## selectRange — Filtering Slices by Descriptor
 
-`:selectRange [stem] C:lo,hi E:lo,hi F:lo,hi P:lo,hi H:lo,hi T:lo,hi`
+`:selectRange [stem] C:lo,hi W:lo,hi E:lo,hi F:lo,hi P:lo,hi H:lo,hi T:lo,hi`
 
 Picks a random slice that falls within the descriptor ranges you specify. Any descriptor you omit is unconstrained — you only filter what you care about. Use named pairs (e.g. `C:1500,4000`) so you can specify only what matters without caring about order.
 
@@ -362,6 +428,10 @@ Picks a random slice that falls within the descriptor ranges you specify. Any de
 - Low (200–800 Hz) = dark, warm, muffled
 - Mid (800–2500 Hz) = neutral
 - High (2500–6000+ Hz) = bright, harsh, airy
+
+**S (Spread)** — spectral width in Hz².
+- Low = narrow, pure, focused sound (sine-like, single instrument)
+- High = wide, full-bodied, complex (chords, noise, full mix)
 
 **E (Energy)** — loudness in LUFS.
 - Low (-60 to -30) = quiet, delicate

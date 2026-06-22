@@ -156,3 +156,9 @@ The mix is a fire — leaders interchange constantly. The split is calculated at
 
 - Should deep chain influence dilute further with each step, or stay proportional?
 - How to handle a stem with no follow relationships at all — equal base only?
+
+---
+
+## TODO — Solidify Curator Equation
+
+The current creative factors (sonic contrast, edit rate, genre diversity) need rethinking. The core question: **what actually justifies a curator earning more from the artist pool?** Sonic contrast as a proxy feels shaky — why would playing more different-sounding tracks earn you more money? The factors should map to genuine creative labor or risk, not just signal variance. Revisit before wiring these up from Max.

@@ -56,16 +56,18 @@ The mechanism is simple: if development stops, holders can no longer sell for hi
 
 ---
 
-## Two Modes
+## Three Modes
 
-|             | EBYS Radio           | Self-hosted Radio   |
-|-------------|----------------------|---------------------|
-| Corpus      | Community-submitted  | Curator-uploaded    |
-| Attribution | Verified by platform | Curator's integrity |
-| Split       | Enforced by contract | No blockchain       |
-| Enforcement | Technical            | Social/reputational |
+|             | EBYS Radio           | Label Radio          | Self-hosted Radio   |
+|-------------|----------------------|----------------------|---------------------|
+| Corpus      | Community-submitted  | Roster-uploaded      | Curator-uploaded    |
+| Attribution | Verified by platform | Verified by platform | Curator's integrity |
+| Split       | Enforced by contract | Enforced by contract | No blockchain       |
+| Enforcement | Technical            | Technical            | Social/reputational |
 
-The tipping and blockchain system is exclusive to the official EBYS Montreal radio. It's a controlled environment — artists submit their tracks directly, attribution is verified by the platform, and the split is enforced by smart contract. Self-hosted radios are outside that system entirely. They can use EBYS as an instrument or run it as a radio, but there is no on-chain tipping, no enforced split, no escrow. That complexity only works when the corpus is trusted.
+The blockchain tipping system is available to any deployment that verifies its users — EBYS Radio and label radios. Verification is what makes the split fair: when the identity of artists is confirmed, the contract can enforce attribution automatically. A record label runs their own EBYS instance, loads their roster, and the tipping system becomes an internal economy. The more a remix gets tipped, the more the label earns as curator, and the artists get paid proportionally. Same algorithm, same on-chain logic, pointed at a private verified corpus.
+
+Self-hosted individuals are outside that system. They can run EBYS as an instrument or a radio, but without user verification there is no on-chain tipping, no enforced split, no escrow. The integrity of attribution rests entirely on the curator.
 
 ---
 
@@ -102,6 +104,6 @@ The remaining `(1 - curator_share)` is split proportionally across all contribut
 
 ## Notes
 
-The Montreal music scene context matters here. The radio and the scraping website are community infrastructure — built on submitted tracks, always free, no monetisation. The radio is a showcase for what the instrument can do, not a product. The website is also where you download EBYS — it's the connection to the world. Charging for access to any of this would break the trust the project is built on.
+The Montreal music scene context matters here. The radio and the scraping website are community infrastructure — built on submitted tracks, always free to access. The radio is a showcase for what the instrument can do, not a product. The website is also where you download EBYS — it's the connection to the world. Charging for access to any of this would break the trust the project is built on.
 
-What is monetisable is the system around it — the hardware instrument, donations, the sustainable protein brand. The community side is a mutualistic trade: EBYS gives the scene a free service, the scene gives EBYS visibility and material. Both sides benefit.
+Monetisation happens through tipping, not gates. Listeners pay what they want, when they want, for mixes that move them. Artists get paid. EBYS gets its cut on composite mixes. Nobody is charged to listen, and nobody is charged to submit. The community side is a mutualistic trade: EBYS gives the scene a free service, the scene gives EBYS visibility, material, and a living economy. Both sides benefit.

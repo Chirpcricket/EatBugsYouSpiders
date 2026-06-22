@@ -20,7 +20,7 @@ Generative audio collage engine. Separates songs into stems, analyzes every tran
 
 ### Per-stem pitch shifting (pfft~/gizmo~)
 - **`ebys-pitch.maxpat`** — new pfft~ subpatch: `fftin~ 1 square` → `gizmo~` → `fftout~ 1 hamming`; `in 2` receives pitch ratio from outside, routes to gizmo~'s frequency-shift inlet; duration unchanged
-- **`EBYS_ANALYZE.maxpat`** — 4× pfft~ objects (one per stem) inserted between karma~ and the mixer; slot_router outlets 16–19 wired to each pfft~ inlet 1
+- **`ebys-analyze.maxpat`** — 4× pfft~ objects (one per stem) inserted between karma~ and the mixer; slot_router outlets 16–19 wired to each pfft~ inlet 1
 - **`slot_router.js` v4** — added pitch outlets (16–19) and `pitchShift / setPitchSemitones / setPitch` functions; per-stem `stemPitch` state; `setPitch all` resets all stems
 - **`ws_server.js`** — intercepts `:pitchShift <stem> <semitones>` before buildIndex check; calls `Max.outlet('pitchShift', stem, semitones)`; route object outlet 22 → `prepend pitchShift` (obj-4068) → slot_router inlet 0
 - TUI command: `:pitchShift melody 3` raises melody 3 semitones; `:pitchShift all 0` resets
@@ -147,7 +147,7 @@ Generative audio collage engine. Separates songs into stems, analyzes every tran
 ### Analysis pipeline
 - `genre_tagger.py` — Essentia-based genre classification, writes `genres.json`
 - `madmom_tagger.py` — downbeat detection via madmom DBNDownBeatTracker, writes `downbeats.json`
-- `fluid.bufmfcc~` added to `EBYS_ANALYZE.maxpat` — computes M0–M5 per slice
+- `fluid.bufmfcc~` added to `ebys-analyze.maxpat` — computes M0–M5 per slice
 - `fluid.buftempogram~` added for BPM estimation
 - Improved BPM estimation in `analyze_reader.js`
 

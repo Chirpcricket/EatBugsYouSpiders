@@ -158,7 +158,7 @@ vocals  slot  startFrac  endFrac  stretchRatio  segDurMs
 | `ebys-pitch.maxpat` | pfft~ subpatch — frequency-domain pitch shifter (gizmo~). Duration unchanged. |
 | `ws_server.js` | Bridges Max ↔ TUI WebSocket; intercepts `:pitchShift` and routes to slot_router |
 | `sdj-tui.js` | Terminal UI |
-| `EBYS_ANALYZE.maxpat` | Max patch: audio graph, karma~ objects, ring buffer~, pfft~ objects, route/prepend wiring |
+| `ebys-analyze.maxpat` | Max patch: audio graph, karma~ objects, ring buffer~, pfft~ objects, route/prepend wiring |
 
 ---
 

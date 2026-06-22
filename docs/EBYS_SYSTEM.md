@@ -53,6 +53,22 @@ La radio est un flux audio continu généré par Cricket — l'instrument de rem
 
 Ces états influencent la sélection des slices en continu.
 
+### What Triggers the Remixing Engine
+
+During the day the radio plays pure tracks — single artists, unaltered. The remixing engine is dormant. Something has to wake it.
+
+The most honest trigger is the city itself. Montreal's weather feeds directly into the engine — rain, temperature, wind, storm pressure. A clear afternoon stays pure. A storm at night activates the collage. The music changes because the city changed.
+
+Weather is the conductor. The radio is the orchestra.
+
+Other possible triggers — to be defined:
+- Time of day (night as default remixing window)
+- Number of active listeners
+- Manual override by a curator
+- Random probability that drifts in and out
+
+These can stack. Weather + night + high listener count = maximum generative complexity.
+
 ### Relation avec le répertoire
 
 La radio n'est pas séparée du site — elle en est le fond sonore vivant. Les artistes qui soumettent leurs pistes au répertoire alimentent directement la radio. La scène montréalaise devient sa propre bande sonore.

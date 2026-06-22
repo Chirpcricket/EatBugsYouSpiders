@@ -127,7 +127,7 @@ The comb-filter scoring in `analyze_reader.js` is already much better than befor
 For the highest accuracy (especially on electronic music with clear beats), you can  
 also add `fluid.buftempogram~` from FluCoMa to the analysis chain.
 
-### In EBYS_ANALYZE.maxpat, after each stem's bufampslice~ finishes:
+### In ebys-analyze.maxpat, after each stem's bufampslice~ finishes:
 
 ```
 fluid.buftempogram~ @source stem_vocals.mono @autocorrelation 1 @features stem_vocals_tempogram
