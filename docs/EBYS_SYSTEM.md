@@ -55,19 +55,29 @@ Ces états influencent la sélection des slices en continu.
 
 ### What Triggers the Remixing Engine
 
-During the day the radio plays pure tracks — single artists, unaltered. The remixing engine is dormant. Something has to wake it.
+The most honest trigger is the city itself. The engine compares today's temperature against the 10-year rolling average for that exact date. Hotter than the historical norm, the engine remixes more. Cooler, it pulls back. The music changes because the city is warmer than it used to be.
 
-The most honest trigger is the city itself. Montreal's weather feeds directly into the engine — rain, temperature, wind, storm pressure. A clear afternoon stays pure. A storm at night activates the collage. The music changes because the city changed.
+The signal is deviation from a 10-year window — same date, same city, compared year over year. The baseline rolls forward each year so it tracks recent climate, not a fixed historical snapshot.
+
+```
+δT = T_today - avg(T_same_date, last 10 years)
+
+entropy = clamp(0.5 + (δT / 5.0), 0.0, 1.0)
+```
+
+- **δT** = how much hotter today is vs. the 10-year average for that date
+- **5.0** = scale — +5°C above average hits maximum entropy (1.0), -5°C hits minimum (0.0)
+- **0.5** = neutral baseline — an average day runs at the midpoint
+- **clamp** = keeps entropy between 0 and 1
+
+An average day remixes at half intensity. A notably hot day pushes toward full generative complexity. A cold anomaly pulls back toward pure tracks.
 
 Weather is the conductor. The radio is the orchestra.
 
 Other possible triggers — to be defined:
-- Time of day (night as default remixing window)
 - Number of active listeners
 - Manual override by a curator
 - Random probability that drifts in and out
-
-These can stack. Weather + night + high listener count = maximum generative complexity.
 
 ### Relation avec le répertoire
 

@@ -46,15 +46,17 @@ There is also a deeper analogy: the system itself behaves like proteins — slic
 
 ## Crypto Token
 
-The token is speculative by design. It launches before the community is fully formed — and grows as the community does. Artists submitting tracks, listeners tipping mixes, DJs building sets from the library: the token reflects that network, not a promise.
+The token is speculative by design. It launches before the community is fully formed — and grows as the community does. Artists submitting tracks, listeners tipping mixes, the radio running — the token reflects that activity, not a promise.
 
-No artificial backing, no promises about utility. The value comes from what the community becomes — the scene around the radio, the artists in the library, the people who care enough to tip. The token is a stake in all of it at once, before any of it is fully legible.
+No artificial backing, no promises about utility. The value comes from what the radio becomes — the listeners, the artists who submit, the people who care enough to tip. The token is a stake in that, before it's fully legible. TRDGA is tied to the EBYS radio economy specifically — not the full network of EBYS users, which is decentralized and unknowable by design.
 
 ---
 
 ## Transparency
 
-Everything is public. Downloads, revenue, library size, listener counts, on-chain tipping activity — all visible to anyone. The token isn't a bet on a black box. Holders can watch the economy move in real time: how many artists are in the system, how many tips are flowing, how many tracks have been submitted. The blockchain handles the tipping side automatically — immutable and open by default. The rest — downloads, traffic, financials — is published openly by choice.
+What EBYS the company can see, it publishes. Downloads of the software, listener counts on the radio, tipping activity on the EBYS instance — all public. The blockchain handles the financial side automatically: every tip, every split, immutable and open by default. The rest — traffic, revenue, submitted track counts — is published openly by choice.
+
+The radio started in Montreal but it's online and open to anyone. The corpus grows from wherever people submit. The scene it reflects is wherever its listeners are.
 
 This fits the rest of the project. The code is GPL. The economy is on-chain. The business numbers are public. Nothing is hidden.
 
@@ -107,6 +109,8 @@ The remaining `(1 - curator_share)` is split proportionally across all contribut
 ---
 
 ## Notes
+
+The remixing engine is driven by a 10-year rolling temperature baseline — the average temperature for that exact date over the past decade. Hotter than the historical norm, the engine remixes more. Cooler, it pulls back. The warmer the climate trends, the more the engine runs — and the more composite mixes get generated, the more the curator earns. It's not the goal. The goal is to sell cricket protein powder instead.
 
 The Montreal music scene context matters here. The radio and the scraping website are community infrastructure — built on submitted tracks, always free to access. The radio is a showcase for what the instrument can do, not a product. The website is also where you download EBYS — it's the connection to the world. Charging for access to any of this would break the trust the project is built on.
 
