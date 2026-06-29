@@ -30,11 +30,19 @@ A website and a continuous radio for the Montreal music scene.
 
 **The website** aggregates upcoming Montreal shows — scraped automatically and submitted by the community. No accounts required, no editorial hierarchy. Filter by genre, date, venue, artist. A living calendar of the scene. Artists submit tracks here too — those submissions feed the radio corpus.
 
-**The radio** plays those tracks continuously. Clean playback — no remixing during tracks. The transition between tracks is where the instrument shows itself: a glitchy, noisy stretch as the audio tears from one piece and lands on the next.
+**The radio** runs 24/7 in three modes:
 
 ```
-[track 1 ending]  @#%%$&??&*  [track 2 beginning]
+Clean track       → plays fully, no manipulation, 100% to artist if tipped
+Noisy transition  → glitchy stretch between two tracks, small EBYS cut if tipped
+Original mix      → EBYS composes from the corpus, full split equation applies
 ```
+
+Most of the time it plays tracks cleanly. Occasionally it transitions with noise. When the playlist runs thin — late nights, quiet periods — EBYS fills the time with original mixes, compositing stems from different artists into something new.
+
+Artists opt in to generative use when they submit. Standard submission means clean playback and clean transitions only — their tracks are never decomposed. Generative opt-in means their stems can appear in noisy transitions and original mixes. EBYS only earns a curator cut when it actually does something — pure playback earns nothing for EBYS.
+
+A mixer console on the radio page shows what's happening in real time: which tracks are playing, which stems, which artists are contributing. When EBYS is compositing, the listener can see it. Tipping is informed — you see where your money goes before you send it.
 
 The cricket protein powder shop is promoted through a spider that lives on the website. It crawls across the interface, sits on buttons, weaves webs over text. Click it — it opens the shop. It's the ad. It's also the joke. It knows what it is.
 
