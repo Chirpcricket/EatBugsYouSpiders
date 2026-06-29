@@ -166,34 +166,59 @@ curator pool: 90% / artists: 10%
 
 The 90% curator pool is split between DJs by the crowd — through the ▲▼ tipping mechanic.
 
-**▲▼ — Listener-Side Split Control**
+**▲▼= — Listener-Side Split Control**
 
-The listener doesn't know which DJ is which physically. They tip the overall mix, but choose which role they want to reward:
+The listener doesn't know which DJ is which physically. They tip the overall mix, but choose which role they want to reward. The choice cascades through both the DJ split and the artist split simultaneously.
 
 ```
-▲  I'm tipping the leader — the DJ who shaped the other's system.
-▼  I'm tipping the follower — the DJ who received and integrated the other's state.
+▲  Leader earns more — DJs and stems being followed get more
+▼  Follower earns more — DJs and stems doing the following get more
+=  Equal — flat split across DJs and stems, follow graph ignored
 ```
 
 The listener interface:
 ```
-[TIP]  ▲ 70/30  |  ▼ 30/70
+[TIP]  ▲  |  =  |  ▼
 ```
 
-Each tip carries its own ▲▼ weight and adds to a running tally. The split is not predetermined — it emerges from the crowd's collective votes over the set.
+Each tip carries its own choice and adds to a running tally. The split is not predetermined — it emerges from the crowd's collective votes over the set.
 
-**At the moment a tip is punched**, the system reads the current state of the LINK follow graph — who has sent more accepted transmissions, who has received more — and applies the listener's ▲▼ choice to determine the split for that tip.
+**At the moment a tip is punched**, the system reads the current state of both follow graphs — the LINK graph between DJs and the stem follow graph within each deck — and applies the listener's choice to determine the split.
 
 ```
-tip punched → read current LINK follow graph → apply ▲▼ choice → split accordingly
-
-DJ A total = sum of all ▲ shares across all tips
-DJ B total = sum of all ▼ shares across all tips
+tip punched → read current LINK follow graph + stem follow graph → apply ▲▼= → split accordingly
 ```
 
-The follow graph between DJs is live — it shifts throughout the set as transmissions are sent and accepted. Each tip reflects the actual state of that graph at the moment it was cast.
+---
 
-Same logic as the stem follow graph in the artist split — just one level up, between DJs instead of between stems. Follow graphs all the way down.
+**DJ level split:**
+
+```
+▲ → DJ with more outgoing accepted transmissions earns more
+▼ → DJ with more incoming accepted transmissions earns more
+=  → 50/50 between DJs
+```
+
+---
+
+**Stem / artist level split:**
+
+```
+▲ → stems being followed by other stems earn more (incoming follows)
+    πᵢ = 0.2  +  0.2 · (Φᵢ / Φ)
+
+▼ → stems doing the most following earn more (outgoing follows)
+    πᵢ = 0.2  +  0.2 · (outgoing_Φᵢ / Φ)
+
+=  → equal split across all stems, follow graph ignored
+    πᵢ = 0.25  for all stems
+```
+
+---
+
+The follow graphs are live — they shift throughout the set as transmissions are sent, accepted, and as followStem relationships change. Each tip reflects the actual state of both graphs at the moment it was cast.
+
+Same logic at every level of the system — follow graphs all the way down.
 
 ---
 
