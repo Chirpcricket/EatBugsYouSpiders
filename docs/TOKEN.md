@@ -13,11 +13,11 @@ The name is the same thing at every level. Cricket — the insect, the AI agent,
 Tips from listeners flow through the tipping protocol. Artists and DJs receive their share in dollars. Each recipient then chooses:
 
 ```
-Receive dollars   → cash out immediately, no crypto involved
-Convert to CRKT   → become a powder company stakeholder
+Receive dollars   → cash out to bank account, no crypto involved
+Convert to CRKT   → connect a Solana wallet, become a powder company stakeholder
 ```
 
-Converting is opt-in. An artist who just wants to get paid gets paid in dollars. An artist who believes in the project converts to CRKT and starts earning from powder sales. A genuine choice with real trade-offs.
+Converting is opt-in. An artist who just wants to get paid gets paid in dollars. An artist who believes in the project connects a wallet, converts to CRKT, and starts earning from powder sales. A genuine choice with real trade-offs.
 
 ---
 
@@ -34,19 +34,19 @@ Split equation runs
 DJ receives curator share
 Artists receive their proportional share
     ↓
-Each recipient chooses: dollars or CRKT
+Each recipient independently chooses: dollars or CRKT
 ```
 
 ### External Context — DJ Only
-A DJ performing on Pioneer decks, at a club, on another platform. The protocol has no visibility into what's playing. The tip goes to the DJ. Full stop. The DJ earns CRKT if they choose to convert, but the artists in that set are invisible to the protocol.
+A DJ performing on Pioneer decks, at a club, on another platform. The protocol has no visibility into what's playing. The tip goes to the DJ. Full stop.
 
 ```
-Listener tips $5 at a club set
+Listener tips $5
     ↓
 DJ receives full tip
     ↓
 DJ chooses: dollars or CRKT
-Artists: not visible to protocol, not included
+Artists: not visible, not included
 ```
 
 This is honest about what the system can and can't see. It also makes EBYS genuinely valuable to artists — if you want your music to earn from tips even when you're not performing, your tracks need to be in an EBYS corpus.
@@ -63,16 +63,18 @@ Powder sells
 EBYS deducts actual operating costs
 Remainder → 100% to distribution pool
     ↓
-Each holder receives: (their CRKT / total supply) × distribution pool
+Each holder receives: (their CRKT / total CRKT supply) × distribution pool
 ```
 
-Distribution is monthly, automatic, on-chain. It arrives. You don't claim it.
+Example: 1000 CRKT in existence, you hold 100 (10%). Distribution pool this month is $500. You receive $50.
+
+Distribution is monthly, automatic, on-chain. It arrives in your wallet. You don't claim it.
 
 ---
 
 ## Escrow
 
-Artists who haven't opted in yet still accumulate earnings. Both dollars and potential CRKT sit in escrow tied to their audio fingerprint — not a wallet, not a person, just the sound itself. When they claim, they choose: cash out in dollars, or convert to CRKT. Everything that accrued is waiting.
+Artists who haven't set up a payment method yet still accumulate earnings on the platform. When they're ready, they connect a bank account (for dollars) or a Solana wallet (for CRKT). Everything that accrued releases at that point.
 
 No expiry. No fees. The money waits.
 
@@ -80,9 +82,7 @@ No expiry. No fees. The money waits.
 
 ## EBYS's Position
 
-EBYS built the protocol and runs one instance of it. It does not hold a CRKT founding stake. It takes a fixed percentage of its own earnings and converts to CRKT like anyone else — as a participant, not as an operator with a privileged cut.
-
-EBYS's founding allocation comes from its own conversion choices, not from a pre-mine. It earns CRKT the same way a curator does — by running sets, by the community tipping those sets, by choosing to convert.
+EBYS built the protocol and runs one instance of it. It does not hold a CRKT founding stake. It earns CRKT the same way a curator does — by running sets, by the community tipping those sets, by choosing to convert earnings to CRKT rather than cash out.
 
 ---
 
